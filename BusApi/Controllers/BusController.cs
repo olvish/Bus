@@ -13,34 +13,6 @@ namespace BusApi.Controllers
     [Route("bus")]
     public class MessagesController : Controller
     {
-
-        [Route("getpassanger/{pasid}")]//ВНЕШКА  гет для забора пассажира из автобуса. если 1, то успешно. если 0, то нет такого пассажира в автобусе
-        public int Getpas(int pasid)
-        {
-            var filepassangers = new FileCSV();
-            var ListOfPassangers = filepassangers.ReadFromCSVPassanger();
-            var k = 0;
-            for (var i = 0; i < ListOfPassangers.Count(); i++)
-                if (ListOfPassangers[i].passangerId == pasid)
-                {
-                    k++;
-                    filepassangers.RemoveFromCSVPassanger(pasid);
-                }
-            if (k > 0)
-                return 1;
-            else
-                return 0;
-        }
-
-        [Route("clear")]//гет для очистки файлов
-        public void GetClear()
-        {
-            var file = new FileCSV();
-            file.ClearAll();
-        }
-
-
-
         [Route("newtask/{plane}")] //ВНЕШКА  этот пост используется сторонними системами, для постановки задания
         public string Post(int plane)
         {

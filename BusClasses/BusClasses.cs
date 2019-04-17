@@ -183,16 +183,11 @@ namespace BusClasses
 
             //оповещаю пассажиров в автобусе, что пора сваливать.
             BusArivedToAirplane();
-
-            //проверяю, что все пассажиры вышли из автобуса
-            checkcntpas = -1;
-            while (checkcntpas != 0)
-            {
-                checkcntpas = file.ReadFromCSVPassanger(this.busId);
-                Thread.Sleep(500);
-            }
+            Thread.Sleep(1000);
+            file.RemoveFromCSVPassangerInBus(this.busId);
             bl.WriteToLog("Автобус " + this.busId + ", движущийся к самолету " + this.planeId
                 + " пуст. Все пассажиры вышли из автобуса");
+
 
             SendLocation("GT1", this.planelocationcode, "Idle");
             //запрос на передвижение
@@ -365,6 +360,32 @@ namespace BusClasses
             for (int i = 0; i < Passangers.Count; i++)
             {
                 if (Passangers[i].passangerId == pasId)
+                {
+                    Passangers.RemoveAt(i);
+                }
+            }
+            bool done = false;
+            while (done == false)
+            {
+                try
+                {
+                    File.WriteAllText(filepathpassengers, String.Empty);
+                    foreach (Passanger pas in Passangers)
+                    {
+                        WriteToCSVPassanger(pas);
+                    }
+                    done = true;
+                }
+                catch (Exception e) { }
+            }
+
+        } //убираю пасссажира по id
+        public void RemoveFromCSVPassangerInBus(int busId)
+        {
+            var Passangers = ReadFromCSVPassanger();
+            for (int i = 0; i < Passangers.Count; i++)
+            {
+                if (Passangers[i].busId == busId)
                 {
                     Passangers.RemoveAt(i);
                 }
